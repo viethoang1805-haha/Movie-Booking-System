@@ -36,7 +36,7 @@ Dự án được thiết kế theo hướng thực tế, có khả năng mở r
 |------|------------|----------|----------|------------|
 | 2026-03-25 | Bùi Việt Hoàng | Thiết kế database (Users, Movies, Showtimes) | SRS Database | ERD |
 | 2026-03-25 | Nguyễn Vũ Anh | Setup project backend (NodeJS) | SRS Setup BE | Ảnh setup |
-| 2026-03-25 | Nguyễn Bá Duy Anh | Setup frontend ReactJS | SRS Setup FE | Ảnh setup |
+| 2026-03-25 | Nguyễn Bá Duy Anh (https://github.com/DuyAnh231o) | Setup frontend ReactJS | [SRS Setup FE](./SRS/SRS_SETUP_FONTEND.MD) | Ảnh setup |
 
 ---
 
@@ -45,7 +45,7 @@ Dự án được thiết kế theo hướng thực tế, có khả năng mở r
 |------|------------|----------|----------|------------|
 | 2026-03-27 | Bùi Việt Hoàng | Xây dựng API đăng ký / đăng nhập | SRS Auth | Ảnh API |
 | 2026-03-27 | Nguyễn Vũ Anh | CRUD Movie | SRS Movie API | Ảnh movie |
-| 2026-03-27 | Nguyễn Bá Duy Anh | UI trang chủ | SRS Home UI | Ảnh UI |
+| 2026-03-27 | Nguyễn Bá Duy Anh () | UI trang chủ | SRS Home UI | Ảnh UI |
 
 ---
 
