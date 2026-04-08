@@ -1,143 +1,64 @@
-Sinh Viên Thực Hiện:Bùi Việt Hoàng-23810310241;Nguyễn Vũ Anh-23810310237;Nguyễn Bá Duy Anh-23810310238
+Tên đề tài
 
--Hoàng 
-Thiết kế kiến trúc hệ thống
-Thiết kế database
-Xây dựng API core 
-Review code BE của team
-Xử lý các logic phức tạp (đặt vé, realtime ghế, thanh toán)
--Vũ Anh
-Xây dựng API phụ
-Hỗ trợ tích hợp thanh toán
-Làm UI các trang chính
--Duy Anh 
-Xây dựng API phụ
-Xử lý email, thông báo
-Làm UI + tương tác frontend
-2. Giai đoạn 1: Thiết kế hệ thống
--Hoàng 
-Thiết kế Database
-Users
-Movies
-Theaters
-Showtimes
-Seats
-Bookings
-Payments
-Promotions
-Vẽ ERD
-Chọn công nghệ:
-Backend: NodeJS (Express/NestJS)
-DB: MySQL / PostgreSQL
+Đề tài: Xây dựng website đặt vé xem phim
+
+Mô tả sơ qua dự án
+
+Đây là dự án xây dựng website đặt vé xem phim trực tuyến, hỗ trợ người dùng tìm kiếm phim, xem lịch chiếu, chọn ghế và thanh toán online.
+
+Hệ thống cho phép quản lý rạp phim, phòng chiếu, suất chiếu, người dùng và giao dịch đặt vé. Ngoài ra, hệ thống còn tích hợp các chức năng nâng cao như chọn ghế realtime, đăng nhập Google (OAuth2), và tích hợp thanh toán online nhằm nâng cao trải nghiệm người dùng.
+
+Dự án được thiết kế theo hướng thực tế, có khả năng mở rộng và tối ưu hiệu năng khi số lượng người dùng lớn.
+
+Các chức năng nổi bật trong dự án
+Nhóm chức năng	Mô tả ngắn
+Xác thực và bảo mật tài khoản	Đăng ký, đăng nhập, đăng xuất, JWT, Google OAuth2, phân quyền (user/admin), mã hóa mật khẩu
+Admin	Quản lý phim, rạp, phòng chiếu, lịch chiếu, người dùng, thống kê
+Người dùng	Xem danh sách phim, chi tiết phim, tìm kiếm phim
+Đặt vé	Chọn ghế, giữ ghế realtime, tránh trùng ghế
+Thanh toán	Tích hợp VNPay, MoMo
+Thông báo & Email	Gửi email xác nhận đặt vé
+Realtime	Cập nhật trạng thái ghế theo thời gian thực (Socket.io)
+Mở rộng	Đánh giá phim, chat support, gợi ý phim
+Bảng công việc theo ngày
+Ngày 2026-03-25
+Ngày	Thành viên	Chức năng / công việc đã làm	Link SRS	Ảnh minh chứng
+2026-03-25	Bùi Việt Hoàng	Thiết kế database (Users, Movies, Showtimes)	SRS Database	ERD
+2026-03-25	Nguyễn Vũ Anh	Setup project backend (NodeJS)	SRS Setup BE	Ảnh setup
+2026-03-25	Nguyễn Bá Duy Anh	Setup frontend ReactJS	SRS Setup FE	Ảnh setup
+Ngày 2026-03-27
+Ngày	Thành viên	Chức năng / công việc đã làm	Link SRS	Ảnh minh chứng
+2026-03-27	Bùi Việt Hoàng	Xây dựng API đăng ký / đăng nhập	SRS Auth	Ảnh API
+2026-03-27	Nguyễn Vũ Anh	CRUD Movie	SRS Movie API	Ảnh movie
+2026-03-27	Nguyễn Bá Duy Anh	UI trang chủ	SRS Home UI	Ảnh UI
+Ngày 2026-03-28
+Ngày	Thành viên	Chức năng / công việc đã làm	Link SRS	Ảnh minh chứng
+2026-03-28	Bùi Việt Hoàng	Tạo API lịch chiếu (Showtime)	SRS Showtime	Ảnh API
+2026-03-28	Nguyễn Vũ Anh	CRUD Theater + Room	SRS Theater	Ảnh theater
+2026-03-28	Nguyễn Bá Duy Anh	UI chi tiết phim	SRS Movie Detail	Ảnh UI
+Ngày 2026-03-29
+Ngày	Thành viên	Chức năng / công việc đã làm	Link SRS	Ảnh minh chứng
+2026-03-29	Bùi Việt Hoàng	Logic đặt vé + lock ghế	SRS Booking	Ảnh booking
+2026-03-29	Nguyễn Vũ Anh	API Seat (sơ đồ ghế)	SRS Seat	Ảnh seat
+2026-03-29	Nguyễn Bá Duy Anh	UI chọn ghế	SRS Seat UI	Ảnh UI
+Ngày 2026-03-30
+Ngày	Thành viên	Chức năng / công việc đã làm	Link SRS	Ảnh minh chứng
+2026-03-30	Bùi Việt Hoàng	Tích hợp realtime (Socket.io)	SRS Realtime	Ảnh realtime
+2026-03-30	Nguyễn Vũ Anh	Tích hợp thanh toán VNPay	SRS Payment	Ảnh payment
+2026-03-30	Nguyễn Bá Duy Anh	UI thanh toán	SRS Payment UI	Ảnh UI
+Ngày 2026-03-31
+Ngày	Thành viên	Chức năng / công việc đã làm	Link SRS	Ảnh minh chứng
+2026-03-31	Bùi Việt Hoàng	Đăng nhập Google OAuth2	SRS Google Login	Ảnh login
+2026-03-31	Nguyễn Vũ Anh	API Promotion (mã giảm giá)	SRS Promotion	Ảnh promo
+2026-03-31	Nguyễn Bá Duy Anh	UI lịch sử đặt vé	SRS History	Ảnh UI
+Công nghệ sử dụng
+Backend: NodeJS (Express)
+Frontend: ReactJS
+Database: MySQL
 Realtime: Socket.io
-Auth: JWT
--Vũ Anh + Duy Anh
-Setup project 
-Tạo base structure:
-Folder structure
-Config môi trường
-Setup Git (branch, workflow)
-3. Giai đoạn 2: Backend Core
--Hoàng (Core APIs)
-Auth:
-Register / Login / JWT
-Movie:
-CRUD phim
-Showtime:
-Tạo lịch chiếu
-Booking:
-Logic đặt vé
-Lock ghế (tránh trùng)
--Vũ Anh (BE phụ)
-Theater + Room:
-CRUD rạp, phòng chiếu
-Seat:
-Sơ đồ ghế
-Promotion:
-Mã giảm giá
--Duy Anh 
-User:
-CRUD user (admin)
-Booking:
-Lịch sử đặt vé
-Email:
-Gửi mail xác nhận
-Notification:
-Thông báo đặt vé
-4. Giai đoạn 3: Frontend
-Hoàng
-Trang:
-Admin Dashboard
-Quản lý phim
-Thống kê
--Vũ Anh
-Trang:
-Trang chủ
-Danh sách phim
-Chi tiết phim
--Duy Anh
-Trang:
-Chọn ghế
-Thanh toán
-Lịch sử đặt vé
-5. Giai đoạn 4: Chức năng nâng cao
--Hoàng
-Realtime ghế (Socket.io)
-Gợi ý phim (recommendation logic)
--Vũ Anh
-Tích hợp thanh toán:
-VNPay
-MoMo
-Combo (bắp nước)
--Duy Anh
-Đánh giá & bình luận
-Chat support (basic)
-Tích điểm / VIP
-6. Giai đoạn 5: Testing & Optimize
--Hoàng
-Test API
-Optimize query DB
-Security:
-Hash password (bcrypt)
-Validate input
--Vũ Anh + Duy Anh
-Test UI/UX
-Responsive
-Fix bug frontend
-7. Giai đoạn 6: Deploy
--Hoàng
-Deploy Backend:
-VPS / Render / Railway
-Setup DB production
--Vũ Anh + Duy Anh
-Deploy Frontend:
-Vercel / Netlify
-Test production
--8. Chia nhỏ task cụ thể (rất quan trọng)
-Backend
-Auth API
-Movie API
-Theater API
-Showtime API
-Seat API
-Booking API
-Payment API
-Frontend
-UI Home
-UI Movie Detail
-UI Booking
-UI Seat Map
-UI Payment
-UI Admin
--9. Timeline gợi ý (3–5 tuần)
-Tuần 1:
-Thiết kế + setup project
-Tuần 2:
-Backend core
-Tuần 3:
-Frontend cơ bản
-Tuần 4:
-Thanh toán + realtime + nâng cao
-Tuần 5:
-Test + deploy
-
+Authentication: JWT, Google OAuth2
+Security: bcrypt
+Payment: VNPay, MoMo
+Deployment: Docker
+Testing: Postman
+API Docs: Swagger
