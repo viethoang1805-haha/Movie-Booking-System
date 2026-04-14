@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "target": "ES2021",                // Tối ưu cho Node hiện tại
+    "module": "commonjs",              // CommonJS chuẩn NestJS
+    "moduleResolution": "node",
+    "ignoreDeprecations": "6.0",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    
+    // ⚡ Cho decorators NestJS
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+
+    // Kiểm tra kiểu nghiêm ngặt
+    "strict": true,
+    "skipLibCheck": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+
+    // Build outputs
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+
+    // Module detection
+    "isolatedModules": true
+  },
+  "include": ["src/**/*", "prisma"],
+  "exclude": ["node_modules", "dist"]
+}
