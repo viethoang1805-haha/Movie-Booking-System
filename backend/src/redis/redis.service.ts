@@ -12,7 +12,13 @@ export class RedisService implements OnModuleInit {
     });
   }
 
+  // ✅ set thường
   async set(key: string, value: any, ttl: number) {
+    return this.client.set(key, value, 'EX', ttl);
+  }
+
+  // ✅ set NX (dùng cho lock)
+  async setNX(key: string, value: any, ttl: number) {
     return this.client.set(key, value, 'EX', ttl, 'NX');
   }
 

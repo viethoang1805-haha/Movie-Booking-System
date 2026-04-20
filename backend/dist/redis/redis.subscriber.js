@@ -1,0 +1,28 @@
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.RedisSubscriber = void 0;
+const common_1 = require("@nestjs/common");
+const ioredis_1 = require("ioredis");
+let RedisSubscriber = class RedisSubscriber {
+    constructor() {
+        this.sub = new ioredis_1.Redis();
+    }
+    onModuleInit() {
+        // subscribe event expire
+        this.sub.psubscribe('__keyevent@0__:expired');
+        this.sub.on('pmessage', (pattern, channel, message) => {
+            console.log('EXPIRED:', message);
+        });
+    }
+};
+exports.RedisSubscriber = RedisSubscriber;
+exports.RedisSubscriber = RedisSubscriber = __decorate([
+    (0, common_1.Injectable)()
+], RedisSubscriber);
+//# sourceMappingURL=redis.subscriber.js.map

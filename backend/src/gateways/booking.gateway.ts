@@ -5,10 +5,11 @@ import {
   MessageBody,
   ConnectedSocket,
 } from '@nestjs/websockets';
-import { SeatLockService } from '../modules/bookings/services/seat-lock.service';
+import { Inject, forwardRef } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
+import { SeatLockService } from '../modules/bookings/services/seat-lock.service';
+import { BookingService } from '../modules/bookings/services/booking.service';
 
-// 🔥 Realtime booking gateway
 @WebSocketGateway({
   cors: { origin: '*' },
 })
@@ -16,67 +17,96 @@ export class BookingGateway {
   @WebSocketServer()
   server!: Server;
 
-  constructor(private readonly seatLockService: SeatLockService) {}
+  constructor(
+    private readonly seatLockService: SeatLockService,
+    @Inject(forwardRef(() => BookingService))
+    private readonly bookingService: BookingService,
+  ) {}
 
-  // -------------------------
-  // Join phòng theo showtime
-  // -------------------------
   @SubscribeMessage('join_showtime')
   handleJoin(
     @ConnectedSocket() client: Socket,
     @MessageBody() showtimeId: number,
   ) {
     client.join(`showtime_${showtimeId}`);
+    console.log(`Client ${client.id} joined showtime_${showtimeId}`);
   }
 
-  // -------------------------
-  // Chọn ghế (lock seat)
-  // -------------------------
   @SubscribeMessage('select_seat')
   async handleSelectSeat(
     @ConnectedSocket() client: Socket,
-    @MessageBody()
-    data: { showtimeId: number; seatId: string; userId: number },
+    @MessageBody() data: { showtimeId: number; seatId: string; userId: number },
   ) {
-    const { showtimeId, seatId, userId } = data;
+    // ✅ Ép kiểu — dữ liệu từ socket.io có thể bị serialize sai kiểu
+    const showtimeId = Number(data.showtimeId);
+    const userId = Number(data.userId);
+    const { seatId } = data;
 
-    const locked = await this.seatLockService.isSeatLocked(
-      showtimeId,
-      seatId,
-    );
+    console.log(`[select_seat] showtimeId=${showtimeId} seatId=${seatId} userId=${userId}`);
+
+    const locked = await this.seatLockService.isSeatLocked(showtimeId, seatId);
 
     if (locked) {
-      client.emit('seat_error', {
-        seatId,
-        message: 'Ghế đã có người giữ',
-      });
+      client.emit('seat_error', { seatId, message: 'Ghế đã có người giữ' });
       return;
     }
 
-    await this.seatLockService.lockSeat(showtimeId, seatId, userId);
+    const success = await this.seatLockService.lockSeat(showtimeId, seatId, userId);
 
-    // Notify tất cả client trong phòng showtime
-    this.server.to(`showtime_${showtimeId}`).emit('seat_locked', {
-      seatId,
-      userId,
-    });
+    console.log(`[select_seat] lockSeat result=${success}`);
+
+    if (!success) {
+      client.emit('seat_error', { seatId, message: 'Không thể giữ ghế, vui lòng thử lại' });
+      return;
+    }
+
+    this.server.to(`showtime_${showtimeId}`).emit('seat_locked', { seatId, userId });
   }
 
-  // -------------------------
-  // Bỏ ghế (unlock seat)
-  // -------------------------
   @SubscribeMessage('unselect_seat')
   async handleUnselectSeat(
     @ConnectedSocket() client: Socket,
-    @MessageBody()
-    data: { showtimeId: number; seatId: string },
+    @MessageBody() data: { showtimeId: number; seatId: string; userId: number },
   ) {
-    const { showtimeId, seatId } = data;
+    const showtimeId = Number(data.showtimeId);
+    const userId = Number(data.userId);
+    const { seatId } = data;
 
-    await this.seatLockService.unlockSeat(showtimeId, seatId);
+    const success = await this.seatLockService.unlockSeat(showtimeId, seatId, userId);
 
-    this.server.to(`showtime_${showtimeId}`).emit('seat_unlocked', {
-      seatId,
-    });
+    if (!success) {
+      client.emit('seat_error', { seatId, message: 'Không thể bỏ ghế (ghế không thuộc về bạn)' });
+      return;
+    }
+
+    this.server.to(`showtime_${showtimeId}`).emit('seat_unlocked', { seatId });
+  }
+
+  @SubscribeMessage('confirm_booking')
+  async handleConfirmBooking(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: { showtimeId: number; seatIds: string[]; userId: number },
+  ) {
+    // ✅ Ép kiểu
+    const showtimeId = Number(data.showtimeId);
+    const userId = Number(data.userId);
+    const { seatIds } = data;
+
+    console.log(`[confirm_booking] showtimeId=${showtimeId} userId=${userId} seatIds=${seatIds}`);
+
+    try {
+      const result = await this.bookingService.confirmBooking(userId, showtimeId, seatIds);
+
+      console.log('[confirm_booking] success:', result);
+
+      client.emit('booking_success', {
+        bookingId: result.bookingId,
+        totalPrice: result.totalPrice,
+      });
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Đặt vé thất bại, vui lòng thử lại';
+      console.error('[confirm_booking] error:', message);
+      client.emit('booking_error', { message });
+    }
   }
 }
