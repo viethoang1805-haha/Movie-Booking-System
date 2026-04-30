@@ -13,24 +13,57 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BookingGateway = void 0;
+// src/gateways/booking.gateway.ts
 const websockets_1 = require("@nestjs/websockets");
 const common_1 = require("@nestjs/common");
+const jwt_1 = require("@nestjs/jwt");
 const socket_io_1 = require("socket.io");
 const seat_lock_service_1 = require("../modules/bookings/services/seat-lock.service");
 const booking_service_1 = require("../modules/bookings/services/booking.service");
 let BookingGateway = class BookingGateway {
-    constructor(seatLockService, bookingService) {
+    constructor(seatLockService, jwtService, bookingService) {
         this.seatLockService = seatLockService;
+        this.jwtService = jwtService;
         this.bookingService = bookingService;
     }
-    handleJoin(client, showtimeId) {
+    // ✅ Verify JWT khi client connect
+    async handleConnection(client) {
+        try {
+            const token = client.handshake.auth?.token ||
+                client.handshake.headers?.authorization?.replace('Bearer ', '');
+            if (!token) {
+                client.emit('auth_error', { message: 'Thiếu token' });
+                client.disconnect();
+                return;
+            }
+            const payload = this.jwtService.verify(token, {
+                secret: process.env.JWT_SECRET ?? 'supersecret',
+            });
+            // ✅ Lưu userId vào socket data để dùng sau
+            client.data.userId = Number(payload.sub);
+            client.data.role = payload.role;
+            console.log(`Client ${client.id} connected — userId=${client.data.userId}`);
+        }
+        catch {
+            client.emit('auth_error', { message: 'Token không hợp lệ' });
+            client.disconnect();
+        }
+    }
+    handleDisconnect(client) {
+        console.log(`Client ${client.id} disconnected`);
+    }
+    async handleJoin(client, showtimeId) {
         client.join(`showtime_${showtimeId}`);
         console.log(`Client ${client.id} joined showtime_${showtimeId}`);
+        // Gửi lại danh sách ghế đang locked cho client vừa join
+        const lockedSeats = await this.seatLockService.getLockedSeats(showtimeId);
+        for (const seat of lockedSeats) {
+            client.emit('seat_locked', { seatId: seat.seatId, userId: seat.userId });
+        }
     }
     async handleSelectSeat(client, data) {
-        // ✅ Ép kiểu — dữ liệu từ socket.io có thể bị serialize sai kiểu
         const showtimeId = Number(data.showtimeId);
-        const userId = Number(data.userId);
+        const userId = client.data.userId; // ✅ Lấy từ token, không nhận từ client
         const { seatId } = data;
         console.log(`[select_seat] showtimeId=${showtimeId} seatId=${seatId} userId=${userId}`);
         const locked = await this.seatLockService.isSeatLocked(showtimeId, seatId);
@@ -48,31 +81,27 @@ let BookingGateway = class BookingGateway {
     }
     async handleUnselectSeat(client, data) {
         const showtimeId = Number(data.showtimeId);
-        const userId = Number(data.userId);
+        const userId = client.data.userId; // ✅ Lấy từ token
         const { seatId } = data;
         const success = await this.seatLockService.unlockSeat(showtimeId, seatId, userId);
         if (!success) {
-            client.emit('seat_error', { seatId, message: 'Không thể bỏ ghế (ghế không thuộc về bạn)' });
+            client.emit('seat_error', { seatId, message: 'Không thể bỏ ghế' });
             return;
         }
         this.server.to(`showtime_${showtimeId}`).emit('seat_unlocked', { seatId });
     }
     async handleConfirmBooking(client, data) {
-        // ✅ Ép kiểu
         const showtimeId = Number(data.showtimeId);
-        const userId = Number(data.userId);
+        const userId = client.data.userId; // ✅ Lấy từ token
         const { seatIds } = data;
         console.log(`[confirm_booking] showtimeId=${showtimeId} userId=${userId} seatIds=${seatIds}`);
         try {
             const result = await this.bookingService.confirmBooking(userId, showtimeId, seatIds);
             console.log('[confirm_booking] success:', result);
-            client.emit('booking_success', {
-                bookingId: result.bookingId,
-                totalPrice: result.totalPrice,
-            });
+            client.emit('booking_success', { bookingId: result.bookingId, totalPrice: result.totalPrice });
         }
         catch (err) {
-            const message = err instanceof Error ? err.message : 'Đặt vé thất bại, vui lòng thử lại';
+            const message = err instanceof Error ? err.message : 'Đặt vé thất bại';
             console.error('[confirm_booking] error:', message);
             client.emit('booking_error', { message });
         }
@@ -89,7 +118,7 @@ __decorate([
     __param(1, (0, websockets_1.MessageBody)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [socket_io_1.Socket, Number]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], BookingGateway.prototype, "handleJoin", null);
 __decorate([
     (0, websockets_1.SubscribeMessage)('select_seat'),
@@ -116,11 +145,10 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], BookingGateway.prototype, "handleConfirmBooking", null);
 exports.BookingGateway = BookingGateway = __decorate([
-    (0, websockets_1.WebSocketGateway)({
-        cors: { origin: '*' },
-    }),
-    __param(1, (0, common_1.Inject)((0, common_1.forwardRef)(() => booking_service_1.BookingService))),
+    (0, websockets_1.WebSocketGateway)({ cors: { origin: '*' } }),
+    __param(2, (0, common_1.Inject)((0, common_1.forwardRef)(() => booking_service_1.BookingService))),
     __metadata("design:paramtypes", [seat_lock_service_1.SeatLockService,
+        jwt_1.JwtService,
         booking_service_1.BookingService])
 ], BookingGateway);
 //# sourceMappingURL=booking.gateway.js.map

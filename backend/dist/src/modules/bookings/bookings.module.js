@@ -7,13 +7,14 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BookingsModule = void 0;
+// src/modules/bookings/bookings.module.ts
 const common_1 = require("@nestjs/common");
+const booking_controller_1 = require("./controllers/booking.controller");
 const booking_service_1 = require("./services/booking.service");
 const seat_lock_service_1 = require("./services/seat-lock.service");
-const booking_controller_1 = require("./controllers/booking.controller");
+const prisma_service_1 = require("../../../prisma/prisma.service");
 const redis_module_1 = require("../../redis/redis.module");
 const gateway_module_1 = require("../../gateways/gateway.module");
-const prisma_service_1 = require("../../../prisma/prisma.service");
 let BookingsModule = class BookingsModule {
 };
 exports.BookingsModule = BookingsModule;
@@ -24,7 +25,7 @@ exports.BookingsModule = BookingsModule = __decorate([
             (0, common_1.forwardRef)(() => gateway_module_1.GatewayModule),
         ],
         controllers: [booking_controller_1.BookingController],
-        providers: [booking_service_1.BookingService, seat_lock_service_1.SeatLockService, prisma_service_1.PrismaService], // ✅ thêm PrismaService
+        providers: [booking_service_1.BookingService, seat_lock_service_1.SeatLockService, prisma_service_1.PrismaService],
         exports: [booking_service_1.BookingService, seat_lock_service_1.SeatLockService],
     })
 ], BookingsModule);

@@ -1,13 +1,16 @@
-// hooks/useSocket.js
+// src/hooks/useSocket.js
 import { io } from "socket.io-client";
 
-// ✅ Gắn vào window để đảm bảo chỉ có 1 instance duy nhất
-if (!window._socket) {
-  window._socket = io(import.meta.env.VITE_SOCKET_URL, {
-    autoConnect: true,
-    reconnection: true,
-    transports: ["websocket"],
-  });
-}
+const socket = io(import.meta.env.VITE_SOCKET_URL, {
+  transports: ["websocket"],
+  autoConnect: false, //Không connect ngay — chỉ connect khi vào trang booking
+});
 
-export default window._socket;
+socket.on("auth_error", (data) => {
+  console.error("Socket auth error:", data.message);
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+  window.location.href = "/login";
+});
+
+export default socket;

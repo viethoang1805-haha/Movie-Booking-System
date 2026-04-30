@@ -5,40 +5,21 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ShowtimesModule = exports.ShowtimesService = void 0;
+exports.ShowtimesModule = void 0;
+// src/modules/showtimes/showtimes.module.ts
 const common_1 = require("@nestjs/common");
-const seat_lock_service_1 = require("./../bookings/services/seat-lock.service");
-let ShowtimesService = class ShowtimesService {
-    constructor(seatLockService) {
-        this.seatLockService = seatLockService;
-    }
-    async getSeats(showtimeId) {
-        const lockedSeats = await this.seatLockService.getLockedSeats(showtimeId);
-        const result = [];
-        const rows = ['A', 'B', 'C', 'D'];
-        for (const row of rows) {
-            for (let i = 1; i <= 5; i++) {
-                const seatId = `${row}${i}`;
-                const isLocked = lockedSeats.find((s) => s.seatId === seatId);
-                result.push({
-                    seatId,
-                    status: isLocked ? 'locked' : 'available',
-                });
-            }
-        }
-        return result;
-    }
+const showtimes_controller_1 = require("../showtimes/controllers/showtimes.controller");
+const showtimes_service_1 = require("./services/showtimes.service");
+const prisma_service_1 = require("../../../prisma/prisma.service");
+let ShowtimesModule = class ShowtimesModule {
 };
-exports.ShowtimesService = ShowtimesService;
-exports.ShowtimesService = ShowtimesService = __decorate([
-    (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [seat_lock_service_1.SeatLockService])
-], ShowtimesService);
-class ShowtimesModule {
-}
 exports.ShowtimesModule = ShowtimesModule;
+exports.ShowtimesModule = ShowtimesModule = __decorate([
+    (0, common_1.Module)({
+        controllers: [showtimes_controller_1.ShowtimeController],
+        providers: [showtimes_service_1.ShowtimeService, prisma_service_1.PrismaService],
+        exports: [showtimes_service_1.ShowtimeService],
+    })
+], ShowtimesModule);
 //# sourceMappingURL=showtimes.module.js.map

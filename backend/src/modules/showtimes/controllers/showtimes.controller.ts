@@ -1,31 +1,54 @@
-import { Controller, Get, Param } from '@nestjs/common';
-import { SeatLockService } from '../../bookings/services/seat-lock.service';
+// src/modules/showtimes/controllers/showtime.controller.ts
+import { Controller, Get, Post, Put, Delete, Param, Body, Query } from '@nestjs/common';
+import { ShowtimeService } from '../../showtimes/services/showtimes.service';
+import { CreateShowtimeDto, UpdateShowtimeDto, ShowtimeQueryDto } from '../dto/showtime.dto';
+import { Public } from '../../../common/decorators/public.decorator';
+import { Roles } from '../../../common/decorators/roles.decorator';
+
 
 @Controller('showtimes')
-export class ShowtimesController {
-  constructor(private seatLockService: SeatLockService) {}
+export class ShowtimeController {
+  constructor(private readonly showtimeService: ShowtimeService) {}
 
+  // GET /showtimes?movieId=1&date=2026-04-20
+    @Public()
+  @Get()
+  findAll(@Query() query: ShowtimeQueryDto) {
+    return this.showtimeService.findAll(query);
+  }
+
+  // GET /showtimes/:id
+  
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.showtimeService.findOne(Number(id));
+  }
+
+  // GET /showtimes/:id/seats — lấy ghế + trạng thái booked
+  
   @Get(':id/seats')
-  async getSeats(@Param('id') id: number) {
-    const locked = await this.seatLockService.getLockedSeats(id);
+  getSeats(@Param('id') id: string) {
+    return this.showtimeService.getSeats(Number(id));
+  }
 
-    // fake danh sách ghế
-    const seats = [];
+  // POST /showtimes
+  @Roles('ADMIN')
+  @Post()
+  create(@Body() dto: CreateShowtimeDto) {
+    return this.showtimeService.create(dto);
+  }
 
-    const rows = ['A', 'B', 'C'];
-    for (let row of rows) {
-      for (let i = 1; i <= 5; i++) {
-        const seatId = `${row}${i}`;
+  // PUT /showtimes/:id
+  @Roles('ADMIN')
+  @Put(':id')
+  update(@Param('id') id: string, @Body() dto: UpdateShowtimeDto) {
+    return this.showtimeService.update(Number(id), dto);
+  }
 
-        const found = locked.find(s => s.seatId === seatId);
-
-        seats.push({
-          seatId,
-          status: found ? 'locked' : 'available',
-        });
-      }
-    }
-
-    return seats;
+  // DELETE /showtimes/:id
+  @Roles('ADMIN')
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.showtimeService.remove(Number(id));
   }
 }

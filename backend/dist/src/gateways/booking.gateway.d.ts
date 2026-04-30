@@ -1,26 +1,28 @@
+import { OnGatewayConnection, OnGatewayDisconnect } from '@nestjs/websockets';
+import { JwtService } from '@nestjs/jwt';
 import { Server, Socket } from 'socket.io';
 import { SeatLockService } from '../modules/bookings/services/seat-lock.service';
 import { BookingService } from '../modules/bookings/services/booking.service';
-export declare class BookingGateway {
+export declare class BookingGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private readonly seatLockService;
+    private readonly jwtService;
     private readonly bookingService;
     server: Server;
-    constructor(seatLockService: SeatLockService, bookingService: BookingService);
-    handleJoin(client: Socket, showtimeId: number): void;
+    constructor(seatLockService: SeatLockService, jwtService: JwtService, bookingService: BookingService);
+    handleConnection(client: Socket): Promise<void>;
+    handleDisconnect(client: Socket): void;
+    handleJoin(client: Socket, showtimeId: number): Promise<void>;
     handleSelectSeat(client: Socket, data: {
         showtimeId: number;
         seatId: string;
-        userId: number;
     }): Promise<void>;
     handleUnselectSeat(client: Socket, data: {
         showtimeId: number;
         seatId: string;
-        userId: number;
     }): Promise<void>;
     handleConfirmBooking(client: Socket, data: {
         showtimeId: number;
         seatIds: string[];
-        userId: number;
     }): Promise<void>;
 }
 //# sourceMappingURL=booking.gateway.d.ts.map

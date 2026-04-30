@@ -10,16 +10,24 @@ exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
 const bookings_module_1 = require("./modules/bookings/bookings.module");
 const redis_module_1 = require("./redis/redis.module");
+const auth_module_1 = require("./modules/auth/auth.module");
 const showtimes_module_1 = require("./modules/showtimes/showtimes.module");
+const movies_module_1 = require("./modules/movies/movies.module");
+const theaters_module_1 = require("./modules/theaters/theaters.module");
+const admin_module_1 = require("./modules/admin/admin.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
+            auth_module_1.AuthModule,
+            movies_module_1.MoviesModule,
+            theaters_module_1.TheatersModule,
             bookings_module_1.BookingsModule,
             redis_module_1.RedisModule,
             showtimes_module_1.ShowtimesModule,
+            admin_module_1.AdminModule,
         ],
     })
 ], AppModule);
