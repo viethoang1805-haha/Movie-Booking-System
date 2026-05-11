@@ -146,10 +146,10 @@ if (!socket.connected) {
         <div style={{ marginBottom: 16, textAlign: "center", lineHeight: 1.8 }}>
           <h2 style={{ margin: "0 0 4px" }}>🎬 {showtime.movie?.title}</h2>
           <p style={{ margin: 0, color: "#555", fontSize: 14 }}>
-            🏢 {showtime.room?.theater?.name} &nbsp;|&nbsp;
-            🚪 {showtime.room?.name} &nbsp;|&nbsp;
-            🕐 {new Date(showtime.startTime).toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit" })}
-            &nbsp;|&nbsp; 💰 {showtime.price?.toLocaleString()}đ/ghế
+            Rạp: {showtime.room?.theater?.name} &nbsp;|&nbsp;
+            Phòng: {showtime.room?.name} &nbsp;|&nbsp;
+            Thời Gian: {new Date(showtime.startTime).toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit" })}
+            &nbsp;|&nbsp; Giá: {showtime.price?.toLocaleString()}đ/ghế
           </p>
         </div>
       )}

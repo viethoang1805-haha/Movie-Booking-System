@@ -26,7 +26,7 @@ let BookingGateway = class BookingGateway {
         this.jwtService = jwtService;
         this.bookingService = bookingService;
     }
-    // ✅ Verify JWT khi client connect
+    //  Verify JWT khi client connect
     async handleConnection(client) {
         try {
             const token = client.handshake.auth?.token ||
@@ -63,7 +63,7 @@ let BookingGateway = class BookingGateway {
     }
     async handleSelectSeat(client, data) {
         const showtimeId = Number(data.showtimeId);
-        const userId = client.data.userId; // ✅ Lấy từ token, không nhận từ client
+        const userId = client.data.userId; // Lấy từ token, không nhận từ client
         const { seatId } = data;
         console.log(`[select_seat] showtimeId=${showtimeId} seatId=${seatId} userId=${userId}`);
         const locked = await this.seatLockService.isSeatLocked(showtimeId, seatId);
@@ -81,7 +81,7 @@ let BookingGateway = class BookingGateway {
     }
     async handleUnselectSeat(client, data) {
         const showtimeId = Number(data.showtimeId);
-        const userId = client.data.userId; // ✅ Lấy từ token
+        const userId = client.data.userId; //  Lấy từ token
         const { seatId } = data;
         const success = await this.seatLockService.unlockSeat(showtimeId, seatId, userId);
         if (!success) {
@@ -92,7 +92,7 @@ let BookingGateway = class BookingGateway {
     }
     async handleConfirmBooking(client, data) {
         const showtimeId = Number(data.showtimeId);
-        const userId = client.data.userId; // ✅ Lấy từ token
+        const userId = client.data.userId; // Lấy từ token
         const { seatIds } = data;
         console.log(`[confirm_booking] showtimeId=${showtimeId} userId=${userId} seatIds=${seatIds}`);
         try {

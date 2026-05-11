@@ -26,7 +26,7 @@ export class BookingGateway implements OnGatewayConnection, OnGatewayDisconnect 
     private readonly bookingService: BookingService,
   ) {}
 
-  // ✅ Verify JWT khi client connect
+  //  Verify JWT khi client connect
   async handleConnection(client: Socket) {
     try {
       const token =
@@ -79,7 +79,7 @@ export class BookingGateway implements OnGatewayConnection, OnGatewayDisconnect 
     @MessageBody() data: { showtimeId: number; seatId: string },
   ) {
     const showtimeId = Number(data.showtimeId);
-    const userId = client.data.userId; // ✅ Lấy từ token, không nhận từ client
+    const userId = client.data.userId; // Lấy từ token, không nhận từ client
     const { seatId } = data;
 
     console.log(`[select_seat] showtimeId=${showtimeId} seatId=${seatId} userId=${userId}`);
@@ -107,7 +107,7 @@ export class BookingGateway implements OnGatewayConnection, OnGatewayDisconnect 
     @MessageBody() data: { showtimeId: number; seatId: string },
   ) {
     const showtimeId = Number(data.showtimeId);
-    const userId = client.data.userId; // ✅ Lấy từ token
+    const userId = client.data.userId; //  Lấy từ token
     const { seatId } = data;
 
     const success = await this.seatLockService.unlockSeat(showtimeId, seatId, userId);
@@ -125,7 +125,7 @@ export class BookingGateway implements OnGatewayConnection, OnGatewayDisconnect 
     @MessageBody() data: { showtimeId: number; seatIds: string[] },
   ) {
     const showtimeId = Number(data.showtimeId);
-    const userId = client.data.userId; // ✅ Lấy từ token
+    const userId = client.data.userId; // Lấy từ token
     const { seatIds } = data;
 
     console.log(`[confirm_booking] showtimeId=${showtimeId} userId=${userId} seatIds=${seatIds}`);
