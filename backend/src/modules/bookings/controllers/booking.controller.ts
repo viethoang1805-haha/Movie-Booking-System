@@ -5,6 +5,7 @@ import { BookingService } from '../services/booking.service';
 import { BookingQueryDto, ConfirmBookingDto } from '../dto/booking.dto';
 import { Public } from '../../../common/decorators/public.decorator';
 import { Roles } from '../../../common/decorators/roles.decorator';
+import { Req, UseGuards } from '@nestjs/common';
 
 @Controller('bookings')
 export class BookingController {
@@ -54,4 +55,5 @@ export class BookingController {
   ) {
     return this.bookingService.cancel(Number(id), body.userId);
   }
+  
 }

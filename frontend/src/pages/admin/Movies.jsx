@@ -145,7 +145,7 @@ export default function AdminMovies() {
       {/* Modal Form */}
       {showForm && (
         <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}>
-          <div style={{ background: "#fff", borderRadius: 16, padding: 32, width: 480, maxHeight: "90vh", overflowY: "auto" }}>
+          <div style={{ background: "#111111", borderRadius: 16, padding: 32, width: 480, maxHeight: "90vh", overflowY: "auto" }}>
             <h2 style={{ margin: "0 0 20px" }}>{editMovie ? "Sửa phim" : "Thêm phim mới"}</h2>
 
             {[
