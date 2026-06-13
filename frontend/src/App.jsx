@@ -13,7 +13,7 @@ import MovieDetail from "./pages/MovieDetail";
 import Login from "./pages/Login";
 import AuthCallback from "./pages/AuthCallback";
 import History from "./pages/History";
-
+import Booking from "./pages/Booking";
 import SeatMap from "./components/booking/SeatMap";
 
 import Dashboard from "./pages/admin/Dashboard";
@@ -101,6 +101,7 @@ function App() {
             </PrivateRoute>
           }
         />
+        
 
         {/* ADMIN */}
         <Route
